@@ -44,6 +44,7 @@ class HelperTests(unittest.TestCase):
             )
             fake.chmod(0o755)
             text = f"Русский ; $(touch {marker}) ' \\nline2 ✓".encode()
+            text += ("\nEnglish text with spaces\r\nРусский текст\n" * 10000).encode()
             env = os.environ.copy()
             env.update({
                 "PATH": f"{temp}:{env.get('PATH', '')}",

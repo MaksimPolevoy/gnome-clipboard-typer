@@ -1,6 +1,7 @@
 import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
 import St from 'gi://St';
@@ -20,9 +21,10 @@ function preview(text) {
     return chars.length > 72 ? `${chars.slice(0, 72).join('')}…` : oneLine;
 }
 
+const TextDialog = GObject.registerClass(
 class TextDialog extends ModalDialog.ModalDialog {
     constructor(text, onCopy) {
-        super();
+        super({destroyOnClose: true});
         this.contentLayout.add_child(new St.Label({
             text: 'Полный текст',
             style_class: 'clipboard-typer-dialog-title',
@@ -41,11 +43,12 @@ class TextDialog extends ModalDialog.ModalDialog {
             {label: 'Скопировать', default: true, action: () => { onCopy(); this.close(); }},
         ]);
     }
-}
+});
 
+const NewlineDialog = GObject.registerClass(
 class NewlineDialog extends ModalDialog.ModalDialog {
     constructor(onPreserve, onReplace) {
-        super();
+        super({destroyOnClose: true});
         const label = new St.Label({
             text: 'В тексте есть переносы строк. В терминале Enter может выполнить команду.\nКак напечатать текст?',
         });
@@ -53,12 +56,13 @@ class NewlineDialog extends ModalDialog.ModalDialog {
         this.contentLayout.add_child(label);
         this.setButtons([
             {label: 'Отмена', key: Clutter.KEY_Escape, action: () => this.close()},
-            {label: 'Заменить пробелами', action: () => { this.close(); onReplace(); }},
-            {label: 'Сохранить переносы', default: true, action: () => { this.close(); onPreserve(); }},
+            {label: 'Заменить пробелами', action: () => { this.connect('closed', () => onReplace()); this.close(); }},
+            {label: 'Сохранить переносы', default: true, action: () => { this.connect('closed', () => onPreserve()); this.close(); }},
         ]);
     }
-}
+});
 
+const Indicator = GObject.registerClass(
 class Indicator extends PanelMenu.Button {
     constructor(extension) {
         super(0.0, 'История буфера и ввод');
@@ -81,10 +85,6 @@ class Indicator extends PanelMenu.Button {
     }
 
     rebuild() {
-        if (this._historyScroll) {
-            this._historyScroll.destroy();
-            this._historyScroll = null;
-        }
         this.menu.removeAll();
         const ext = this._extension;
         if (!ext.isX11()) {
@@ -100,12 +100,8 @@ class Indicator extends PanelMenu.Button {
                 {reactive: false}
             ));
         } else {
-            this._historyScroll = new St.ScrollView({
-                overlay_scrollbars: true,
-                style_class: 'clipboard-typer-history-scroll',
-            });
             const historySection = new PopupMenu.PopupMenuSection();
-            this._historyScroll.add_actor(historySection.actor);
+            this.menu.addMenuItem(historySection);
             for (const text of ext.history) {
                 const row = new PopupMenu.PopupSubMenuMenuItem(preview(text) || '(пустой текст)');
                 const full = new PopupMenu.PopupMenuItem('Просмотреть полностью');
@@ -119,7 +115,6 @@ class Indicator extends PanelMenu.Button {
                 row.menu.addMenuItem(type);
                 historySection.addMenuItem(row);
             }
-            this.menu.box.add_child(this._historyScroll);
         }
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
@@ -166,7 +161,7 @@ class Indicator extends PanelMenu.Button {
         item.menu.addMenuItem(plus);
         menu.addMenuItem(item);
     }
-}
+});
 
 export default class ClipboardTyperExtension extends Extension {
     enable() {
@@ -297,6 +292,7 @@ export default class ClipboardTyperExtension extends Extension {
     }
 
     requestTyping(text) {
+        this._indicator.menu.close();
         if (/\r|\n/.test(text)) {
             new NewlineDialog(
                 () => this._startTyping(text),

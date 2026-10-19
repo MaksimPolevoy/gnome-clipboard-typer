@@ -12,20 +12,20 @@
 ## Установка готового RPM
 
 Готовые пакеты опубликованы в
-[GitHub Releases](https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/tag/v1.0.1).
+[GitHub Releases](https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/tag/v1.0.2).
 На РЕД ОС их можно скачать прямо из терминала:
 
 ```bash
 # GNOME Shell 44
-curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.1/gnome-shell-extension-clipboard-typer-gnome44-1.0.1-1.noarch.rpm
+curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.2/gnome-shell-extension-clipboard-typer-gnome44-1.0.2-1.noarch.rpm
 
 # GNOME Shell 45 или 46
-curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.1/gnome-shell-extension-clipboard-typer-gnome46-1.0.1-1.noarch.rpm
+curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.2/gnome-shell-extension-clipboard-typer-gnome46-1.0.2-1.noarch.rpm
 
 # GNOME Shell 47 или 48
-curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.1/gnome-shell-extension-clipboard-typer-gnome48-1.0.1-1.noarch.rpm
+curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.2/gnome-shell-extension-clipboard-typer-gnome48-1.0.2-1.noarch.rpm
 
-curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.1/SHA256SUMS
+curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.2/SHA256SUMS
 sha256sum --ignore-missing -c SHA256SUMS
 ```
 
@@ -39,13 +39,13 @@ gnome-shell --version
 
 ```bash
 # GNOME Shell 44
-sudo -E dnf install ./dist/gnome-shell-extension-clipboard-typer-gnome44-1.0.1-1.noarch.rpm
+sudo -E dnf install ./dist/gnome-shell-extension-clipboard-typer-gnome44-1.0.2-1.noarch.rpm
 
 # GNOME Shell 45 или 46
-sudo -E dnf install ./dist/gnome-shell-extension-clipboard-typer-gnome46-1.0.1-1.noarch.rpm
+sudo -E dnf install ./dist/gnome-shell-extension-clipboard-typer-gnome46-1.0.2-1.noarch.rpm
 
 # GNOME Shell 47 или 48
-sudo -E dnf install ./dist/gnome-shell-extension-clipboard-typer-gnome48-1.0.1-1.noarch.rpm
+sudo -E dnf install ./dist/gnome-shell-extension-clipboard-typer-gnome48-1.0.2-1.noarch.rpm
 ```
 
 Пакеты локальной сборки не подписаны GPG. Если политика DNF требует подпись,
@@ -69,6 +69,17 @@ clipboard-typer-diagnose
 RPM устанавливает файлы системно, поэтому только установка пакета выполняется с
 правами администратора. Само расширение и команда включения от root не
 запускаются.
+
+## Исправления 1.0.2
+
+Зарегистрированы GObject-классы индикатора и диалогов, исправлена связь
+подменю истории с основным меню. Ввод многострочного текста начинается после
+закрытия диалога и освобождения фокуса. После обновления выйдите из GNOME и
+войдите снова: выключение и включение расширения не перечитывает его модули.
+
+Если общий переключатель расширений выключен, включите его в приложении
+«Расширения». Проверка: `gsettings get org.gnome.shell disable-user-extensions`.
+Значение `true` блокирует запуск даже включённого расширения.
 
 ## Требования
 
@@ -226,6 +237,7 @@ Chrome, конкретный JavaScript/Canvas-клиент, XKB-расклад�
 
 ```bash
 python3 -m unittest discover -s tests -v
+node tests/test_extension_runtime.cjs
 glib-compile-schemas --strict src/schemas
 node --check src/gnome44/extension.js
 node --check src/gnome46/extension.js

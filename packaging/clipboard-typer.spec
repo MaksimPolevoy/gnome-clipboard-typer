@@ -1,7 +1,7 @@
 %{!?flavor:%global flavor gnome46}
 
 Name:           gnome-shell-extension-clipboard-typer-%{flavor}
-Version:        1.0.1
+Version:        1.0.2
 Release:        1%{?dist}
 Summary:        GNOME clipboard history with X11 keyboard typing
 
@@ -69,6 +69,9 @@ install -m 0755 packaging/clipboard-typer-enable "%{buildroot}%{_bindir}/clipboa
 printf '%s\n' 'Clipboard Typer установлен. Войдите в GNOME заново и выполните от обычного пользователя: clipboard-typer-enable'
 
 %changelog
+* Mon Oct 19 2026 Clipboard Typer Maintainers <noreply@local> - 1.0.2-1
+- Register indicator and dialogs, repair history menu ownership and multiline focus
+
 * Mon Oct 19 2026 Clipboard Typer Maintainers <noreply@local> - 1.0.1-1
 - Add a dedicated GNOME Shell 48 package variant
 

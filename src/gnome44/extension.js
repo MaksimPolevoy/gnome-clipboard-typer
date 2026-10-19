@@ -1,4 +1,4 @@
-const {Clutter, Gio, GLib, Meta, Shell, St} = imports.gi;
+const {Clutter, Gio, GLib, GObject, Meta, Shell, St} = imports.gi;
 const Main = imports.ui.main;
 const ModalDialog = imports.ui.modalDialog;
 const PanelMenu = imports.ui.panelMenu;
@@ -15,9 +15,10 @@ function preview(text) {
     return chars.length > 72 ? `${chars.slice(0, 72).join('')}…` : oneLine;
 }
 
+const TextDialog = GObject.registerClass(
 class TextDialog extends ModalDialog.ModalDialog {
     constructor(text, onCopy) {
-        super();
+        super({destroyOnClose: true});
         this.contentLayout.add_child(new St.Label({text: 'Полный текст', style_class: 'clipboard-typer-dialog-title'}));
         const scroll = new St.ScrollView({overlay_scrollbars: true, style_class: 'clipboard-typer-text-scroll'});
         const label = new St.Label({text, x_align: Clutter.ActorAlign.START});
@@ -30,22 +31,24 @@ class TextDialog extends ModalDialog.ModalDialog {
             {label: 'Скопировать', default: true, action: () => { onCopy(); this.close(); }},
         ]);
     }
-}
+});
 
+const NewlineDialog = GObject.registerClass(
 class NewlineDialog extends ModalDialog.ModalDialog {
     constructor(onPreserve, onReplace) {
-        super();
+        super({destroyOnClose: true});
         const label = new St.Label({text: 'В тексте есть переносы строк. В терминале Enter может выполнить команду.\nКак напечатать текст?'});
         label.clutter_text.line_wrap = true;
         this.contentLayout.add_child(label);
         this.setButtons([
             {label: 'Отмена', key: Clutter.KEY_Escape, action: () => this.close()},
-            {label: 'Заменить пробелами', action: () => { this.close(); onReplace(); }},
-            {label: 'Сохранить переносы', default: true, action: () => { this.close(); onPreserve(); }},
+            {label: 'Заменить пробелами', action: () => { this.connect('closed', () => onReplace()); this.close(); }},
+            {label: 'Сохранить переносы', default: true, action: () => { this.connect('closed', () => onPreserve()); this.close(); }},
         ]);
     }
-}
+});
 
+const Indicator = GObject.registerClass(
 class Indicator extends PanelMenu.Button {
     constructor(extension) {
         super(0.0, 'История буфера и ввод');
@@ -68,10 +71,6 @@ class Indicator extends PanelMenu.Button {
     }
 
     rebuild() {
-        if (this._historyScroll) {
-            this._historyScroll.destroy();
-            this._historyScroll = null;
-        }
         this.menu.removeAll();
         const ext = this._extension;
         if (!ext.isX11()) {
@@ -85,12 +84,8 @@ class Indicator extends PanelMenu.Button {
                 ext.settings.get_boolean('history-paused') ? 'Сохранение истории приостановлено' : 'История пока пуста',
                 {reactive: false}));
         } else {
-            this._historyScroll = new St.ScrollView({
-                overlay_scrollbars: true,
-                style_class: 'clipboard-typer-history-scroll',
-            });
             const historySection = new PopupMenu.PopupMenuSection();
-            this._historyScroll.add_actor(historySection.actor);
+            this.menu.addMenuItem(historySection);
             for (const text of ext.history) {
                 const row = new PopupMenu.PopupSubMenuMenuItem(preview(text) || '(пустой текст)');
                 const full = new PopupMenu.PopupMenuItem('Просмотреть полностью');
@@ -104,7 +99,6 @@ class Indicator extends PanelMenu.Button {
                 row.menu.addMenuItem(type);
                 historySection.addMenuItem(row);
             }
-            this.menu.box.add_child(this._historyScroll);
         }
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         const pause = new PopupMenu.PopupSwitchMenuItem('Пауза сохранения истории', ext.settings.get_boolean('history-paused'));
@@ -147,7 +141,7 @@ class Indicator extends PanelMenu.Button {
         item.menu.addMenuItem(plus);
         menu.addMenuItem(item);
     }
-}
+});
 
 class ClipboardTyperExtension {
     enable() {
@@ -279,6 +273,7 @@ class ClipboardTyperExtension {
     }
 
     requestTyping(text) {
+        this._indicator.menu.close();
         if (/\r|\n/.test(text)) {
             new NewlineDialog(() => this._startTyping(text),
                 () => this._startTyping(text.replace(/\r\n|\r|\n/g, ' '))).open();

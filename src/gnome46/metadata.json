@@ -4,5 +4,5 @@
   "description": "История CLIPBOARD и безопасная имитация набора через xdotool",
   "shell-version": ["45", "46", "47", "48"],
   "settings-schema": "org.gnome.shell.extensions.clipboard-typer",
-  "version": 1
+  "version": 2
 }
