@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.clipboard-typer" path="/org/gnome/shell/extensions/clipboard-typer/">
+    <key name="history-json" type="s">
+      <default>'[]'</default>
+      <summary>История буфера в JSON</summary>
+    </key>
+    <key name="history-paused" type="b">
+      <default>false</default>
+      <summary>Приостановить сбор истории</summary>
+    </key>
+    <key name="persist-history" type="b">
+      <default>true</default>
+      <summary>Сохранять историю между сеансами</summary>
+    </key>
+    <key name="start-delay-ms" type="i">
+      <range min="0" max="15000"/>
+      <default>2000</default>
+      <summary>Пауза перед вводом, миллисекунды</summary>
+    </key>
+    <key name="key-delay-ms" type="i">
+      <range min="0" max="1000"/>
+      <default>50</default>
+      <summary>Пауза между символами, миллисекунды</summary>
+    </key>
+    <key name="open-history" type="as">
+      <default>['&lt;Super&gt;v']</default>
+      <summary>Открыть историю</summary>
+    </key>
+    <key name="stop-typing" type="as">
+      <default>['&lt;Super&gt;&lt;Shift&gt;Escape']</default>
+      <summary>Немедленно остановить ввод</summary>
+    </key>
+  </schema>
+</schemalist>
+

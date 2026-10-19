@@ -1,0 +1,9 @@
+{
+  "uuid": "clipboard-typer@local",
+  "name": "История буфера и ввод",
+  "description": "История CLIPBOARD и безопасная имитация набора через xdotool",
+  "shell-version": ["45", "46"],
+  "settings-schema": "org.gnome.shell.extensions.clipboard-typer",
+  "version": 1
+}
+

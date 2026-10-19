@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.rpm-build.*
+dist/*.rpm
+dist/SHA256SUMS
+.DS_Store
+

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+readonly UUID="clipboard-typer@local"
+
+if [[ ${EUID} -eq 0 ]]; then
+    printf '%s\n' "ОШИБКА: запускайте эту команду от пользователя графического сеанса, не от root." >&2
+    exit 1
+fi
+
+if [[ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]]; then
+    printf '%s\n' "ОШИБКА: команда должна выполняться в терминале внутри сеанса GNOME." >&2
+    exit 2
+fi
+
+if ! command -v gnome-extensions >/dev/null 2>&1; then
+    printf '%s\n' "ОШИБКА: команда gnome-extensions не найдена." >&2
+    exit 3
+fi
+
+if gnome-extensions enable "$UUID"; then
+    printf '%s\n' "Расширение включено. Оно будет запускаться при входе в GNOME."
+else
+    printf '%s\n' "GNOME ещё не увидел расширение. Выйдите из сеанса, войдите снова и повторите clipboard-typer-enable." >&2
+    exit 4
+fi
+

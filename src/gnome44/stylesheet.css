@@ -1,0 +1,4 @@
+.clipboard-typer-warning { color: #f6d32d; }
+.clipboard-typer-dialog-title { font-weight: bold; font-size: 1.2em; }
+.clipboard-typer-text-scroll { width: 600px; height: 360px; }
+.clipboard-typer-history-scroll { max-height: 480px; }
