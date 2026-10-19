@@ -1,7 +1,7 @@
 %{!?flavor:%global flavor gnome46}
 
 Name:           gnome-shell-extension-clipboard-typer-%{flavor}
-Version:        1.0.0
+Version:        1.0.1
 Release:        1%{?dist}
 Summary:        GNOME clipboard history with X11 keyboard typing
 
@@ -17,9 +17,17 @@ Requires:       xdotool
 Provides:       gnome-shell-extension(clipboard-typer@local) = %{version}-%{release}
 
 %if "%{flavor}" == "gnome44"
+%global source_branch gnome44
 Conflicts:      gnome-shell-extension-clipboard-typer-gnome46
+Conflicts:      gnome-shell-extension-clipboard-typer-gnome48
 %else
+%global source_branch gnome46
 Conflicts:      gnome-shell-extension-clipboard-typer-gnome44
+%if "%{flavor}" == "gnome46"
+Conflicts:      gnome-shell-extension-clipboard-typer-gnome48
+%else
+Conflicts:      gnome-shell-extension-clipboard-typer-gnome46
+%endif
 %endif
 
 %description
@@ -40,9 +48,9 @@ typing is supported only in an X11/Xorg session.
 extension_dir="%{buildroot}%{_datadir}/gnome-shell/extensions/clipboard-typer@local"
 mkdir -p "$extension_dir/helper" "$extension_dir/schemas" "%{buildroot}%{_bindir}"
 
-install -m 0644 "src/%{flavor}/metadata.json" "$extension_dir/metadata.json"
-install -m 0644 "src/%{flavor}/extension.js" "$extension_dir/extension.js"
-install -m 0644 "src/%{flavor}/stylesheet.css" "$extension_dir/stylesheet.css"
+install -m 0644 "src/%{source_branch}/metadata.json" "$extension_dir/metadata.json"
+install -m 0644 "src/%{source_branch}/extension.js" "$extension_dir/extension.js"
+install -m 0644 "src/%{source_branch}/stylesheet.css" "$extension_dir/stylesheet.css"
 install -m 0755 "src/helper/clipboard-typer-helper" "$extension_dir/helper/clipboard-typer-helper"
 install -m 0644 "src/schemas/org.gnome.shell.extensions.clipboard-typer.gschema.xml" \
     "$extension_dir/schemas/org.gnome.shell.extensions.clipboard-typer.gschema.xml"
@@ -61,5 +69,8 @@ install -m 0755 packaging/clipboard-typer-enable "%{buildroot}%{_bindir}/clipboa
 printf '%s\n' 'Clipboard Typer установлен. Войдите в GNOME заново и выполните от обычного пользователя: clipboard-typer-enable'
 
 %changelog
+* Mon Oct 19 2026 Clipboard Typer Maintainers <noreply@local> - 1.0.1-1
+- Add a dedicated GNOME Shell 48 package variant
+
 * Mon Oct 19 2026 Clipboard Typer Maintainers <noreply@local> - 1.0.0-1
 - Initial RPM release for GNOME Shell 44 and 45/46

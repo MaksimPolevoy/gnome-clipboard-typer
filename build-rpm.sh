@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
-readonly VERSION="1.0.0"
+readonly VERSION="1.0.1"
 readonly SOURCE_NAME="clipboard-typer-${VERSION}"
 readonly DIST_DIR="${SCRIPT_DIR}/dist"
 
@@ -42,7 +42,7 @@ if [[ "$(uname -s)" == "Darwin" || "${RPMBUILD_NODEPS:-0}" == "1" ]]; then
     rpmbuild_options+=(--nodeps)
 fi
 
-for flavor in gnome44 gnome46; do
+for flavor in gnome44 gnome46 gnome48; do
     log "Сборка RPM: ${flavor}"
     rpmbuild "${rpmbuild_options[@]}" --define "flavor ${flavor}" "$top_dir/SPECS/clipboard-typer.spec"
 done
@@ -52,12 +52,12 @@ while IFS= read -r -d '' rpm_file; do
     install -m 0644 "$rpm_file" "$DIST_DIR/$(basename -- "$rpm_file")"
 done < <(find "$top_dir/RPMS" -type f -name '*.rpm' -print0)
 
-rpm_count="$(find "$DIST_DIR" -maxdepth 1 -type f -name '*.rpm' | wc -l | tr -d ' ')"
-[[ "$rpm_count" -ge 2 ]] || die "Ожидалось два RPM, найдено: ${rpm_count}"
+rpm_count="$(find "$DIST_DIR" -maxdepth 1 -type f -name "*-${VERSION}-*.rpm" | wc -l | tr -d ' ')"
+[[ "$rpm_count" -ge 3 ]] || die "Ожидалось три RPM, найдено: ${rpm_count}"
 if command -v sha256sum >/dev/null 2>&1; then
-    (cd "$DIST_DIR" && sha256sum ./*.rpm) > "$DIST_DIR/SHA256SUMS"
+    (cd "$DIST_DIR" && sha256sum ./*-"${VERSION}"-*.rpm) > "$DIST_DIR/SHA256SUMS"
 elif command -v shasum >/dev/null 2>&1; then
-    (cd "$DIST_DIR" && shasum -a 256 ./*.rpm) > "$DIST_DIR/SHA256SUMS"
+    (cd "$DIST_DIR" && shasum -a 256 ./*-"${VERSION}"-*.rpm) > "$DIST_DIR/SHA256SUMS"
 else
     die "Не найдена утилита sha256sum или shasum для контрольных сумм."
 fi

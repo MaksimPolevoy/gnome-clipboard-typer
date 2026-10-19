@@ -14,7 +14,11 @@ ROOT = Path(__file__).resolve().parents[1]
 class InstallTests(unittest.TestCase):
     @unittest.skipUnless(shutil.which("glib-compile-schemas"), "нужен glib-compile-schemas")
     def test_selects_matching_shell_build(self) -> None:
-        for major, expected in ((44, "imports.misc.extensionUtils"), (46, "resource:///org/gnome/shell/")):
+        for major, expected in (
+            (44, "imports.misc.extensionUtils"),
+            (46, "resource:///org/gnome/shell/"),
+            (48, "resource:///org/gnome/shell/"),
+        ):
             with self.subTest(major=major), tempfile.TemporaryDirectory() as directory:
                 temp = Path(directory)
                 fake_bin = temp / "bin"

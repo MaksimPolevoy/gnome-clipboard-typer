@@ -31,8 +31,8 @@ fi
 
 case "$shell_major" in
     44) source_dir="${SCRIPT_DIR}/src/gnome44" ;;
-    45|46) source_dir="${SCRIPT_DIR}/src/gnome46" ;;
-    *) die "Поддерживаются GNOME Shell 44, 45 и 46; обнаружена версия ${shell_major}. Совместимость не подтверждена." ;;
+    45|46|47|48) source_dir="${SCRIPT_DIR}/src/gnome46" ;;
+    *) die "Поддерживаются GNOME Shell 44–48; обнаружена версия ${shell_major}. Совместимость не подтверждена." ;;
 esac
 
 stage_dir="$(mktemp -d)"

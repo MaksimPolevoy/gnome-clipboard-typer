@@ -1,4 +1,4 @@
-# История буфера и ввод для GNOME 44–46
+# История буфера и ввод для GNOME 44–48
 
 Расширение GNOME Shell хранит последние 20 уникальных текстов из системного
 `CLIPBOARD` и умеет вводить выбранный текст как реальные X11-нажатия клавиш.
@@ -12,18 +12,21 @@
 ## Установка готового RPM
 
 Готовые пакеты опубликованы в
-[GitHub Releases](https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/tag/v1.0.0).
+[GitHub Releases](https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/tag/v1.0.1).
 На РЕД ОС их можно скачать прямо из терминала:
 
 ```bash
 # GNOME Shell 44
-curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.0/gnome-shell-extension-clipboard-typer-gnome44-1.0.0-1.noarch.rpm
+curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.1/gnome-shell-extension-clipboard-typer-gnome44-1.0.1-1.noarch.rpm
 
 # GNOME Shell 45 или 46
-curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.0/gnome-shell-extension-clipboard-typer-gnome46-1.0.0-1.noarch.rpm
+curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.1/gnome-shell-extension-clipboard-typer-gnome46-1.0.1-1.noarch.rpm
 
-curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.0/SHA256SUMS
-sha256sum -c SHA256SUMS
+# GNOME Shell 47 или 48
+curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.1/gnome-shell-extension-clipboard-typer-gnome48-1.0.1-1.noarch.rpm
+
+curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.1/SHA256SUMS
+sha256sum --ignore-missing -c SHA256SUMS
 ```
 
 Сначала узнайте версию GNOME:
@@ -36,10 +39,13 @@ gnome-shell --version
 
 ```bash
 # GNOME Shell 44
-sudo -E dnf install ./dist/gnome-shell-extension-clipboard-typer-gnome44-1.0.0-1.noarch.rpm
+sudo -E dnf install ./dist/gnome-shell-extension-clipboard-typer-gnome44-1.0.1-1.noarch.rpm
 
 # GNOME Shell 45 или 46
-sudo -E dnf install ./dist/gnome-shell-extension-clipboard-typer-gnome46-1.0.0-1.noarch.rpm
+sudo -E dnf install ./dist/gnome-shell-extension-clipboard-typer-gnome46-1.0.1-1.noarch.rpm
+
+# GNOME Shell 47 или 48
+sudo -E dnf install ./dist/gnome-shell-extension-clipboard-typer-gnome48-1.0.1-1.noarch.rpm
 ```
 
 Пакеты локальной сборки не подписаны GPG. Если политика DNF требует подпись,
@@ -66,7 +72,7 @@ RPM устанавливает файлы системно, поэтому то�
 
 ## Требования
 
-* РЕД ОС с GNOME Shell 44, 45 или 46;
+* РЕД ОС с GNOME Shell 44–48;
 * сеанс «GNOME on Xorg» для функции набора;
 * `python3`, `xdotool`, `glib-compile-schemas`, `gnome-extensions`;
 * запуск приложения обычным пользователем.
@@ -101,7 +107,7 @@ chmod +x install.sh uninstall.sh diagnose.sh
 Установщик:
 
 1. определяет версию `gnome-shell`;
-2. выбирает legacy-сборку для GNOME 44 или ESM-сборку для 45/46;
+2. выбирает legacy-сборку для GNOME 44 или ESM-сборку для 45–48;
 3. устанавливает файлы только в
    `~/.local/share/gnome-shell/extensions/clipboard-typer@local`;
 4. компилирует локальную схему GSettings и пытается включить расширение.

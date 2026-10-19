@@ -26,6 +26,7 @@ class StaticSafetyTests(unittest.TestCase):
         self.assertIn('Requires:       xdotool', spec)
         self.assertIn('--target noarch-linux', builder)
         self.assertIn('--define "_prefix /usr"', builder)
+        self.assertIn('gnome44 gnome46 gnome48', builder)
 
 
 if __name__ == "__main__":
