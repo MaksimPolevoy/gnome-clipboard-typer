@@ -12,20 +12,20 @@
 ## Установка готового RPM
 
 Готовые пакеты опубликованы в
-[GitHub Releases](https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/tag/v1.0.3).
+[GitHub Releases](https://github.com/MaksimPolevoy/gnome-clipboard-typer/releases/tag/v1.0.3).
 На РЕД ОС их можно скачать прямо из терминала:
 
 ```bash
 # GNOME Shell 44
-curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.3/gnome-shell-extension-clipboard-typer-gnome44-1.0.3-1.noarch.rpm
+curl -LO https://github.com/MaksimPolevoy/gnome-clipboard-typer/releases/download/v1.0.3/gnome-shell-extension-clipboard-typer-gnome44-1.0.3-1.noarch.rpm
 
 # GNOME Shell 45 или 46
-curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.3/gnome-shell-extension-clipboard-typer-gnome46-1.0.3-1.noarch.rpm
+curl -LO https://github.com/MaksimPolevoy/gnome-clipboard-typer/releases/download/v1.0.3/gnome-shell-extension-clipboard-typer-gnome46-1.0.3-1.noarch.rpm
 
 # GNOME Shell 47 или 48
-curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.3/gnome-shell-extension-clipboard-typer-gnome48-1.0.3-1.noarch.rpm
+curl -LO https://github.com/MaksimPolevoy/gnome-clipboard-typer/releases/download/v1.0.3/gnome-shell-extension-clipboard-typer-gnome48-1.0.3-1.noarch.rpm
 
-curl -LO https://github.com/polevoimv-debug/gnome-clipboard-typer/releases/download/v1.0.3/SHA256SUMS
+curl -LO https://github.com/MaksimPolevoy/gnome-clipboard-typer/releases/download/v1.0.3/SHA256SUMS
 sha256sum --ignore-missing -c SHA256SUMS
 ```
 
